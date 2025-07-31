@@ -12,9 +12,10 @@
     --accent-color: #ff6b6b;
     --text-color: #ffffff;
     --bg-color: #1f1f38;
-    --card-bg: #2a2a4a;
-    --header-bg: #18182e;
+    --card-bg: rgba(42, 42, 74, 0.7); /* 透明卡片背景（0.7是透明度） */
+    --header-bg: rgba(24, 24, 46, 0.8); /* 透明头部背景 */
     --border-color: #38385f;
+    /* 其他变量... */
     --danger-color: #ff4444;
     --success-color: #4cd964;
     --light-gray: #e0e0e0;
