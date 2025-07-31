@@ -81,7 +81,7 @@
     </footer>
 
     <!-- 详情页逻辑 -->
-  <script>
+<!--   <script>
         // 从URL获取文章ID
         const urlParams = new URLSearchParams(window.location.search);
         const blogId = parseInt(urlParams.get('id'));
@@ -210,6 +210,128 @@
             // 评论表单提交事件
             document.getElementById('comment-form').addEventListener('submit', submitComment);
         });
-    </script> 
+    </script>  -->
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 从URL获取博客ID
+        const urlParams = new URLSearchParams(window.location.search);
+        const blogId = parseInt(urlParams.get('id'));
+        
+        if (!blogId) {
+            document.getElementById('detail-content').innerHTML = '<p>抱歉，请求的文章不存在或已被删除。</p>';
+            return;
+        }
+        
+        // 加载博客文章
+        loadBlog(blogId);
+    });
+    
+    // 加载博客文章
+    async function loadBlog(blogId) {
+        try {
+            const response = await fetch('data/blogs.json');
+            const blogs = await response.json();
+            const blog = blogs.find(b => b.id === blogId);
+            
+            if (!blog) {
+                document.getElementById('detail-content').innerHTML = '<p>抱歉，请求的文章不存在或已被删除。</p>';
+                return;
+            }
+            
+            // 填充文章内容
+            document.getElementById('detail-title').innerText = blog.title;
+            document.getElementById('detail-date').innerHTML = `<i class="far fa-calendar"></i> ${blog.date}`;
+            document.getElementById('detail-comments').innerHTML = `<i class="far fa-comment"></i> ${blog.comments} 评论`;
+            
+            const categories = {
+                'security': '网络安全',
+                'tools': '工具实践',
+                'ctf': 'CTF竞赛',
+                'linux': 'Linux探索'
+            };
+            document.getElementById('detail-category').innerText = categories[blog.category] || '未分类';
+            
+            document.getElementById('detail-image').src = blog.image;
+            document.getElementById('detail-image').alt = blog.title;
+            
+            // 格式化内容（简单处理换行）
+            document.getElementById('detail-content').innerHTML = `<p>${blog.content.replace(/\n/g, '</p><p>')}</p>`;
+            
+            // 加载评论
+            loadComments(blogId);
+        } catch (error) {
+            console.error('加载博客失败:', error);
+            document.getElementById('detail-content').innerHTML = '<p>加载文章时出错，请稍后再试。</p>';
+        }
+    }
+    
+    // 加载评论
+    function loadComments(blogId) {
+        // 从localStorage获取评论
+        const allComments = JSON.parse(localStorage.getItem('kon-comments') || '{}');
+        const comments = allComments[blogId] || [];
+        
+        // 更新评论计数
+        document.getElementById('comments-count').innerText = comments.length;
+        
+        // 渲染评论
+        const commentsContainer = document.getElementById('comments-container');
+        commentsContainer.innerHTML = '';
+        
+        comments.forEach(comment => {
+            const commentEl = document.createElement('div');
+            commentEl.style.background = 'var(--card-bg)';
+            commentEl.style.padding = '1rem';
+            commentEl.style.borderRadius = '4px';
+            commentEl.style.marginBottom = '1rem';
+            
+            commentEl.innerHTML = `
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <strong>${comment.author}</strong>
+                    <small>${comment.date}</small>
+                </div>
+                <p>${comment.content}</p>
+            `;
+            
+            commentsContainer.appendChild(commentEl);
+        });
+    }
+    
+    // 提交评论
+    function submitComment(e) {
+        e.preventDefault();
+        
+        const blogId = parseInt(new URLSearchParams(window.location.search).get('id'));
+        const author = document.getElementById('comment-author').value;
+        const content = document.getElementById('comment-content').value;
+        
+        if (!author || !content) return;
+        
+        // 创建评论对象
+        const comment = {
+            id: Date.now(),
+            author,
+            content,
+            date: new Date().toLocaleString()
+        };
+        
+        // 保存到localStorage
+        const allComments = JSON.parse(localStorage.getItem('kon-comments') || '{}');
+        if (!allComments[blogId]) {
+            allComments[blogId] = [];
+        }
+        allComments[blogId].push(comment);
+        localStorage.setItem('kon-comments', JSON.stringify(allComments));
+        
+        // 重新加载评论并重置表单
+        loadComments(blogId);
+        document.getElementById('comment-form').reset();
+        
+        // 更新评论计数显示
+        const commentsCount = document.getElementById('comments-count');
+        commentsCount.innerText = parseInt(commentsCount.innerText) + 1;
+    }
+</script>
 </body>
 </html>
