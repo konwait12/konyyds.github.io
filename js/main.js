@@ -376,3 +376,18 @@ function init() {
 
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', init);
+
+// 清理本地存储数据（所有用户可见）
+document.getElementById('clear-storage-btn').addEventListener('click', function(e) {
+    e.preventDefault();
+    if (confirm('确定要清理本地缓存吗？这将重置您看到的文章数据（不会影响服务器数据）')) {
+        // 清除所有相关本地存储
+        localStorage.removeItem('kon-blogs');
+        localStorage.removeItem('kon-comments');
+        localStorage.removeItem('kon-profile');
+        localStorage.removeItem('kon-settings');
+        
+        // 重新加载页面，从初始JSON加载数据
+        window.location.reload();
+    }
+});
