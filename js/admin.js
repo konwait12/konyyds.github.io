@@ -72,10 +72,10 @@ function renderBlogList() {
                     <td>${blog.comments}</td>
                     <td class="actions">
                         <button class="btn btn-sm btn-edit" data-id="${blog.id}">
-                            <i class="fas fa-edit"></i> 编辑
+                            <i class="fas fa-edit"></i> 编辑（源码教程）
                         </button>
                         <button class="btn btn-sm btn-delete" data-id="${blog.id}">
-                            <i class="fas fa-trash"></i> 删除
+                            <i class="fas fa-trash"></i> 删除（源码教程）
                         </button>
                     </td>
                 </tr>
@@ -89,16 +89,51 @@ function renderBlogList() {
     document.querySelectorAll('.btn-edit').forEach(btn => {
         btn.addEventListener('click', function() {
             const blogId = parseInt(this.getAttribute('data-id'));
-            openEditModal(blogId);
+            // 编辑按钮改为显示源码修改教程
+            showEditSourceCodeTutorial(blogId);
         });
     });
     
     document.querySelectorAll('.btn-delete').forEach(btn => {
         btn.addEventListener('click', function() {
             const blogId = parseInt(this.getAttribute('data-id'));
-            deleteBlog(blogId);
+            // 删除按钮改为显示源码修改教程
+            showDeleteSourceCodeTutorial(blogId);
         });
     });
+}
+
+// 显示编辑文章的源代码修改教程
+function showEditSourceCodeTutorial(blogId) {
+    const blogs = JSON.parse(localStorage.getItem('kon-blogs') || '[]');
+    const blog = blogs.find(b => b.id === blogId);
+    
+    if (!blog) return;
+    
+    alert(`【编辑文章源代码修改教程】
+1. 打开仓库中的 data/blogs.json 文件
+2. 找到id为 ${blogId} 的文章对象：
+{
+  "id": ${blogId},
+  "title": "${blog.title}",
+  "content": "${blog.content.substring(0, 30)}...",
+  ...
+}
+3. 修改需要更新的字段（title、content、category等）
+4. 注意保持JSON格式正确性（逗号、引号等）
+5. 保存文件并提交到GitHub仓库
+6. 等待页面部署后生效`);
+}
+
+// 显示删除文章的源代码修改教程
+function showDeleteSourceCodeTutorial(blogId) {
+    alert(`【删除文章源代码修改教程】
+1. 打开仓库中的 data/blogs.json 文件
+2. 找到id为 ${blogId} 的文章对象
+3. 删除该对象（注意删除前后的逗号，确保JSON格式正确）
+4. 同时删除评论数据：打开 data/comments.json，删除key为 ${blogId} 的评论数组
+5. 保存文件并提交到GitHub仓库
+6. 等待页面部署后生效`);
 }
 
 // 获取分类名称
@@ -112,111 +147,20 @@ function getCategoryName(category) {
     return categories[category] || '未分类';
 }
 
-// 打开编辑模态框
+// 打开编辑模态框（保留函数但实际不会被调用）
 function openEditModal(blogId) {
-    const blogs = JSON.parse(localStorage.getItem('kon-blogs') || '[]');
-    const blog = blogs.find(b => b.id === blogId);
-    
-    const modal = document.getElementById('blog-modal');
-    const modalTitle = document.getElementById('modal-title');
-    const blogForm = document.getElementById('blog-form');
-    
-    if (!modal || !modalTitle || !blogForm) return;
-    
-    // 如果是新增文章
-    if (!blogId) {
-        modalTitle.textContent = '新增文章';
-        blogForm.reset();
-        document.getElementById('blog-id').value = '';
-    } 
-    // 如果是编辑已有文章
-    else if (blog) {
-        modalTitle.textContent = '编辑文章';
-        document.getElementById('blog-id').value = blog.id;
-        document.getElementById('blog-title').value = blog.title;
-        document.getElementById('blog-category').value = blog.category;
-        document.getElementById('blog-content').value = blog.content;
-    }
-    
-    modal.style.display = 'block';
+    // 此函数已被禁用，改为显示源码教程
 }
 
-// 保存文章
+// 保存文章（保留函数但实际不会被调用）
 function saveBlog(e) {
     e.preventDefault();
-    
-    const blogId = document.getElementById('blog-id').value;
-    const title = document.getElementById('blog-title').value;
-    const category = document.getElementById('blog-category').value;
-    const content = document.getElementById('blog-content').value;
-    
-    if (!title || !content) {
-        alert('标题和内容不能为空');
-        return;
-    }
-    
-    const blogs = JSON.parse(localStorage.getItem('kon-blogs') || '[]');
-    const today = new Date().toLocaleDateString();
-    
-    // 编辑现有文章
-    if (blogId) {
-        const index = blogs.findIndex(b => b.id === parseInt(blogId));
-        if (index !== -1) {
-            blogs[index] = {
-                ...blogs[index],
-                title,
-                category,
-                content
-            };
-        }
-    } 
-    // 新增文章
-    else {
-        const newId = blogs.length > 0 
-            ? Math.max(...blogs.map(b => b.id)) + 1 
-            : 1;
-        
-        blogs.push({
-            id: newId,
-            title,
-            content,
-            category,
-            image: `https://picsum.photos/600/400?random=${newId}`,
-            date: today,
-            comments: 0,
-            tags: []
-        });
-    }
-    
-    // 保存到本地存储
-    localStorage.setItem('kon-blogs', JSON.stringify(blogs));
-    
-    // 刷新列表并关闭模态框
-    renderBlogList();
-    updateDashboardStats();
-    document.getElementById('blog-modal').style.display = 'none';
+    alert('请通过修改源代码的方式更新文章，具体教程请点击"编辑（源码教程）"按钮查看');
 }
 
-// 删除文章
+// 删除文章（保留函数但实际不会被调用）
 function deleteBlog(blogId) {
-    if (!confirm('确定要删除这篇文章吗？此操作不可恢复。')) {
-        return;
-    }
-    
-    let blogs = JSON.parse(localStorage.getItem('kon-blogs') || '[]');
-    blogs = blogs.filter(blog => blog.id !== blogId);
-    
-    // 保存到本地存储
-    localStorage.setItem('kon-blogs', JSON.stringify(blogs));
-    
-    // 同时删除相关评论
-    const allComments = JSON.parse(localStorage.getItem('kon-comments') || '{}');
-    delete allComments[blogId];
-    localStorage.setItem('kon-comments', JSON.stringify(allComments));
-    
-    // 刷新列表
-    renderBlogList();
-    updateDashboardStats();
+    // 此函数已被禁用，改为显示源码教程
 }
 
 // 更新仪表盘统计数据
@@ -486,13 +430,32 @@ document.addEventListener('DOMContentLoaded', function() {
     initSettingsForm();
     initPasswordForm();
     
-    // 事件监听 - 新增文章按钮
+    // 事件监听 - 新增文章按钮（改为显示源码教程）
     const addBlogBtn = document.getElementById('add-blog-btn');
     if (addBlogBtn) {
-        addBlogBtn.addEventListener('click', () => openEditModal());
+        addBlogBtn.addEventListener('click', () => {
+            const blogs = JSON.parse(localStorage.getItem('kon-blogs') || '[]');
+            const newId = blogs.length > 0 ? Math.max(...blogs.map(b => b.id)) + 1 : 1;
+            
+            alert(`【新增文章源代码修改教程】
+1. 打开仓库中的 data/blogs.json 文件
+2. 在数组中添加新的文章对象，格式如下：
+{
+  "id": ${newId},  // 确保ID唯一（比现有最大ID大1）
+  "title": "文章标题",
+  "content": "文章内容（支持换行）",
+  "image": "图片URL",  // 如：https://images.unsplash.com/xxx
+  "date": "${new Date().toISOString().split('T')[0]}",  // 日期格式：YYYY-MM-DD
+  "comments": 0,  // 初始评论数为0
+  "category": "security",  // 分类标识（security/tools/ctf/linux）
+  "tags": ["标签1", "标签2"]  // 文章标签数组
+}
+3. 保存文件并提交到GitHub仓库
+4. 等待页面部署后生效`);
+        });
     }
     
-    // 事件监听 - 文章表单提交
+    // 事件监听 - 文章表单提交（禁用默认保存功能）
     const blogForm = document.getElementById('blog-form');
     if (blogForm) {
         blogForm.addEventListener('submit', saveBlog);
