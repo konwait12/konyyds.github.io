@@ -198,7 +198,7 @@ function updateBlogCommentCount(blogId, count) {
     
     if (blogIndex !== -1) {
         blogs[blogIndex].comments = count;
-        localStorage.setItem('kon-myblog-blogs', JSON.stringify(blogs));
+        localStorage.setItem('kon-blogs', JSON.stringify(blogs));
     }
 }
 
