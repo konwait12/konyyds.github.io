@@ -394,14 +394,17 @@ document.getElementById('clear-storage-btn').addEventListener('click', function(
 
 // 在页面加载完成后添加监听
 window.addEventListener('beforeunload', function() {
-    // 清除所有localStorage中与该网站相关的数据
-    // 方法1：清除清除所有localStorage数据
-    localStorage.clear();
+    // 只清除文章相关的存储键，保留登录状态
+    const articleKeys = [
+        'kon-blogs', 
+        'kon-comments', 
+        'kon-myblog-blogs'
+        // 确保不包含登录相关的键（如kon-login、user-info等）
+    ];
     
-    // 方法2：如果需要保留其他网站数据（但通常同一域名下数据是隔离的）
-    // 可以针对性删除已知的存储键
-    /*
-    const keys = ['kon-blogs', 'kon-comments', 'kon-myblog-blogs', 'kon-myblog-admin', 'kon-profile', 'kon-settings'];
-    keys.forEach(key => localStorage.removeItem(key));
-    */
+    articleKeys.forEach(key => {
+        if (localStorage.getItem(key)) {
+            localStorage.removeItem(key);
+        }
+    });
 });
