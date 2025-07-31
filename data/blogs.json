@@ -12,7 +12,7 @@
     {
         "id": 2,
         "title": "Kali Linux入门指南",
-        "content": "Kali Linux是安全专业人士和爱好者的首选工具。本指南将带您了解其基本功能和常用工具。\n\nKali Linux预装了大量渗透测试工具，包括：\n- Nmap：网络扫描工具\n- Metasploit：渗透测试框架\n- Wireshark：网络协议分析器\n- Burp Suite：Web应用安全测试工具\n\n安装Kali Linux的方法有多种，可以直接安装在物理机上，也可以使用虚拟机或Live CD。",
+        "content": "Kali Linux是安全专业人士和爱好者的首选工具。本指南将带您了解其基本功能和常用工具。\n\nKali Linux预装了大量渗透测试工具，包括：\n- Nmap：网络扫描工具\n- Metasploit：渗透测试框架\n- Wireshark：网络协议分析器\n- Burp Suite：Web应用安全测试工具\n\n安装Kali Linux的方法有多种，可以直接安装在物理机上，也可以使用虚拟机或Live CD。<a href='https://blog.csdn.net/Cairo_A/article/details/143776045' target='_blank'>[1]</a>",
         "image": "https://images.unsplash.com/photo-1593508512255-86ab42a8e620?ixlib=rb-4.0.3&auto=format&fit=crop&w=1206&q=80",
         "date": "2024-01-10",
         "comments": 8,
