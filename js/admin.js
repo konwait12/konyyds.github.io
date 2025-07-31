@@ -486,3 +486,17 @@ document.addEventListener('DOMContentLoaded', function() {
         logoutBtn.addEventListener('click', logout);
     }
 });
+// 清理本地存储数据
+document.getElementById('clear-storage').addEventListener('click', function() {
+    if (confirm('确定要清理所有本地存储数据吗？这将重置所有文章和评论！')) {
+        // 清除所有相关数据
+        localStorage.removeItem('kon-blogs');
+        localStorage.removeItem('kon-comments');
+        localStorage.removeItem('kon-profile');
+        localStorage.removeItem('kon-settings');
+        
+        // 重新初始化数据（会加载默认的JSON数据）
+        initBlogs();
+        alert('本地存储已清理，已恢复默认数据');
+    }
+});
