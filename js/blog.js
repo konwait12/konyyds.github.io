@@ -921,19 +921,8 @@ function validateEmail(email) {
         commentsCount.innerText = parseInt(commentsCount.innerText) + 1;
     }
 </script>
-```
 
-\##\# 修改说明：
-1. 所有从本地存储获取博客数据的代码都改为直接从 `data/blogs.json` 请求
-2. 移除了所有将博客数据保存到本地存储的代码
-3. 管理员功能中的编辑、删除和新增文章功能被禁用，因为没有了本地存储来保存更改
-4. 评论功能仍然使用本地存储，因为没有后端服务器来保存评论
-5. 登录状态仍然使用本地存储，因为没有后端认证系统
 
-这些修改后，博客内容将直接从 `data/blogs.json` 文件加载，所有更改需要直接编辑该JSON文件才能生效。以下是去掉本地存储功能、直接使用 `data/blogs.json` 数据所需修改的文件代码：
-
-\##\# 1. js/blog.js
-```javascript
 // 初始化博客详情页
 document.addEventListener('DOMContentLoaded', () => {
     // 检查登录状态（保留登录状态的本地存储，因为没有后端）
@@ -1177,10 +1166,9 @@ function validateEmail(email) {
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
 }
-```
 
-\##\# 2. js/main.js
-```javascript
+
+
 // 初始化博客数据
 async function initBlogs() {
     // 直接从JSON文件加载数据
@@ -1455,10 +1443,7 @@ document.addEventListener('DOMContentLoaded', () => {
     checkAdminLogin();
     setupEventListeners();
 });
-```
 
-\##\# 3. js/admin.js
-```javascript
 // 注意：去掉本地存储后，管理员功能将无法保存更改
 // 以下代码仅保留查看功能，编辑和删除功能会被禁用
 
