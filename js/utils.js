@@ -1,6 +1,6 @@
 // 获取博客数据
 function getBlogs() {
-    return JSON.parse(localStorage.getItem('kon-myblog-blogs')) || [
+    return JSON.parse(localStorage.getItem('kon-blogs')) || [
         // 初始博客数据
         {
             id: 1,
