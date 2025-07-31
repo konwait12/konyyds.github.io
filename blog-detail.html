@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>博客详情 - kon-myblog</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- 头部导航 -->
+    <header>
+        <div class="logo">
+            <i class="fas fa-blog"></i>
+            <h1>kon-myblog</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">首页</a></li>
+                <li><a href="index.html#blogs" class="active">博客</a></li>
+                <li><a href="index.html#about">关于我</a></li>
+                <li><a href="index.html#contact">联系</a></li>
+                <li><a href="admin.html" id="admin-link" style="display: none;">
+                    <i class="fas fa-user-shield"></i> 管理后台
+                </a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- 详情内容 -->
+    <div class="container blog-detail">
+        <section>
+            <h2 id="detail-title">加载中...</h2>
+            <div class="blog-meta">
+                <span id="detail-date"><i class="far fa-calendar"></i> 加载中...</span>
+                <span id="detail-comments"><i class="far fa-comment"></i> 加载中...</span>
+                <span id="detail-category" class="blog-category">加载中...</span>
+            </div>
+            <div class="detail-image">
+                <img id="detail-image" src="" alt="文章图片" style="width: 100%; max-height: 500px; object-fit: cover; margin: 1rem 0;">
+            </div>
+            <div class="detail-content" id="detail-content">
+                <p>加载中...</p>
+            </div>
+            
+            <!-- 评论区 -->
+            <div class="comments-section" style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #38385f;">
+                <h3>评论 (<span id="comments-count">0</span>)</h3>
+                <div id="comments-container" style="margin: 1rem 0;">
+                    <!-- 评论将动态加载 -->
+                </div>
+                
+                <!-- 评论表单 -->
+                <form id="comment-form" style="margin-top: 1rem;">
+                    <div class="form-group">
+                        <label for="comment-author">昵称</label>
+                        <input type="text" id="comment-author" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="comment-content">评论内容</label>
+                        <textarea id="comment-content" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">提交评论</button>
+                </form>
+            </div>
+        </section>
+    </div>
+
+    <!-- 页脚 -->
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="social-links">
+                <a href="https://github.com/konwait12" target="_blank">
+                    <i class="fab fa-github"></i>
+                </a>
+            </div>
+            <p class="copyright">
+                © 2024 kon-myblog | 网络安全博客 
+            </p>
+        </div>
+    </footer>
+
+    <!-- 详情页逻辑 -->
+    <script>
+        // 从URL获取文章ID
+        const urlParams = new URLSearchParams(window.location.search);
+        const blogId = parseInt(urlParams.get('id'));
+        
+        // 检查管理员登录状态
+        function checkAdminLogin() {
+            const isLoggedIn = localStorage.getItem('kon-myblog-admin') === 'true';
+            const adminLink = document.getElementById('admin-link');
+            
+            if (isLoggedIn) {
+                adminLink.style.display = 'block';
+            }
+        }
+        
+        // 加载文章详情
+        function loadBlogDetail() {
+            const blogs = JSON.parse(localStorage.getItem('kon-blogs') || '[]');
+            const blog = blogs.find(b => b.id === blogId);
+            
+            if (!blog) {
+                document.getElementById('detail-title').innerText = '文章不存在';
+                document.getElementById('detail-content').innerHTML = '<p>抱歉，请求的文章不存在或已被删除。</p>';
+                return;
+            }
+            
+            // 填充文章内容
+            document.getElementById('detail-title').innerText = blog.title;
+            document.getElementById('detail-date').innerHTML = `<i class="far fa-calendar"></i> ${blog.date}`;
+            document.getElementById('detail-comments').innerHTML = `<i class="far fa-comment"></i> ${blog.comments} 评论`;
+            
+            const categories = {
+                'security': '网络安全',
+                'tools': '工具实践',
+                'ctf': 'CTF竞赛',
+                'linux': 'Linux探索'
+            };
+            document.getElementById('detail-category').innerText = categories[blog.category] || '未分类';
+            
+            document.getElementById('detail-image').src = blog.image;
+            document.getElementById('detail-image').alt = blog.title;
+            
+            // 格式化内容（简单处理换行）
+            document.getElementById('detail-content').innerHTML = `<p>${blog.content.replace(/\n/g, '</p><p>')}</p>`;
+            
+            // 加载评论
+            loadComments(blogId);
+        }
+        
+        // 加载评论
+        function loadComments(blogId) {
+            // 从localStorage获取评论
+            const allComments = JSON.parse(localStorage.getItem('kon-comments') || '{}');
+            const comments = allComments[blogId] || [];
+            
+            // 更新评论计数
+            document.getElementById('comments-count').innerText = comments.length;
+            
+            // 渲染评论
+            const commentsContainer = document.getElementById('comments-container');
+            commentsContainer.innerHTML = '';
+            
+            comments.forEach(comment => {
+                const commentEl = document.createElement('div');
+                commentEl.style.background = 'var(--card-bg)';
+                commentEl.style.padding = '1rem';
+                commentEl.style.borderRadius = '4px';
+                commentEl.style.marginBottom = '1rem';
+                
+                commentEl.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <strong>${comment.author}</strong>
+                        <small>${comment.date}</small>
+                    </div>
+                    <p>${comment.content}</p>
+                `;
+                
+                commentsContainer.appendChild(commentEl);
+            });
+        }
+        
+        // 提交评论
+        function submitComment(e) {
+            e.preventDefault();
+            
+            const author = document.getElementById('comment-author').value;
+            const content = document.getElementById('comment-content').value;
+            
+            if (!author || !content) return;
+            
+            // 创建评论对象
+            const comment = {
+                id: Date.now(),
+                author,
+                content,
+                date: new Date().toLocaleString()
+            };
+            
+            // 保存到localStorage
+            const allComments = JSON.parse(localStorage.getItem('kon-comments') || '{}');
+            if (!allComments[blogId]) {
+                allComments[blogId] = [];
+            }
+            allComments[blogId].push(comment);
+            localStorage.setItem('kon-comments', JSON.stringify(allComments));
+            
+            // 更新文章评论数
+            const blogs = JSON.parse(localStorage.getItem('kon-blogs') || '[]');
+            const blogIndex = blogs.findIndex(b => b.id === blogId);
+            if (blogIndex !== -1) {
+                blogs[blogIndex].comments++;
+                localStorage.setItem('kon-blogs', JSON.stringify(blogs));
+                document.getElementById('detail-comments').innerHTML = `<i class="far fa-comment"></i> ${blogs[blogIndex].comments} 评论`;
+                document.getElementById('comments-count').innerText = blogs[blogIndex].comments;
+            }
+            
+            // 重新加载评论并重置表单
+            loadComments(blogId);
+            document.getElementById('comment-form').reset();
+        }
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAdminLogin();
+            loadBlogDetail();
+            
+            // 评论表单提交事件
+            document.getElementById('comment-form').addEventListener('submit', submitComment);
+        });
+    </script>
+</body>
+</html>

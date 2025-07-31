@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>博客后台管理</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- 登录校验 -->
+    <script>
+        if (!localStorage.getItem('kon-myblog-admin')) {
+            alert('请先登录管理员账号');
+            window.location.href = 'index.html';
+        }
+    </script>
+
+    <!-- 后台头部 -->
+    <header class="admin-header">
+        <h2><i class="fas fa-cog"></i> 博客管理后台</h2>
+        <button id="logout-btn" class="btn btn-danger">
+            <i class="fas fa-sign-out-alt"></i> 退出登录
+        </button>
+    </header>
+
+    <!-- 主内容区 -->
+    <div class="admin-container">
+        <!-- 标签页导航 -->
+        <div class="admin-tabs">
+            <button class="active" data-tab="dashboard-tab">
+                <i class="fas fa-tachometer-alt"></i> 仪表盘
+            </button>
+            <button data-tab="blogs-tab">
+                <i class="fas fa-file-alt"></i> 文章管理
+            </button>
+            <button data-tab="comments-tab">
+                <i class="fas fa-comments"></i> 评论管理
+            </button>
+            <button data-tab="settings-tab">
+                <i class="fas fa-sliders-h"></i> 网站设置
+            </button>
+            <button data-tab="profile-tab">
+                <i class="fas fa-user"></i> 个人设置
+            </button>
+        </div>
+
+        <!-- 仪表盘 -->
+        <div id="dashboard-tab" class="tab-content active">
+            <section class="admin-section dashboard">
+                <h3>博客概览</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h4>文章总数</h4>
+                        <p id="stat-total-blogs">0</p>
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="stat-card">
+                        <h4>评论总数</h4>
+                        <p id="stat-total-comments">0</p>
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="stat-card">
+                        <h4>分类总数</h4>
+                        <p id="stat-total-categories">0</p>
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <div class="stat-card">
+                        <h4>最新文章</h4>
+                        <p id="stat-latest-post">-</p>
+                        <i class="fas fa-clock"></i>
+                    </div>
+                </div>
+
+                <div class="recent-activity">
+                    <h3>最近活动</h3>
+                    <p class="activity-info">这里将显示您的最近操作记录</p>
+                </div>
+            </section>
+        </div>
+
+        <!-- 文章管理 -->
+        <div id="blogs-tab" class="tab-content">
+            <section class="admin-section">
+                <div class="section-header">
+                    <h3>文章管理</h3>
+                    <div class="search-filter">
+                        <input type="text" id="blog-search" placeholder="搜索文章...">
+                    </div>
+                </div>
+                <div id="blog-list">
+                    <!-- 文章列表将动态加载 -->
+                </div>
+                <button id="add-blog-btn" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> 新增文章
+                </button>
+            </section>
+        </div>
+
+        <!-- 评论管理 -->
+        <div id="comments-tab" class="tab-content">
+            <section class="admin-section">
+                <h3>评论管理</h3>
+                <div id="comments-list">
+                    <!-- 评论列表将动态加载 -->
+                </div>
+            </section>
+        </div>
+
+        <!-- 网站设置 -->
+        <div id="settings-tab" class="tab-content">
+            <section class="admin-section">
+                <h3>网站设置</h3>
+                <form id="settings-form">
+                    <div class="form-group">
+                        <label for="site-title">网站标题</label>
+                        <input type="text" id="site-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="hero-title">首页横幅标题</label>
+                        <input type="text" id="hero-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="hero-subtitle">首页横幅副标题</label>
+                        <input type="text" id="hero-subtitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="profile-desc">关于我描述</label>
+                        <textarea id="profile-desc" rows="4"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">保存设置</button>
+                </form>
+            </section>
+        </div>
+
+        <!-- 个人设置 -->
+        <div id="profile-tab" class="tab-content">
+            <section class="admin-section">
+                <h3>个人设置</h3>
+                <form id="password-form">
+                    <div class="form-group">
+                        <label for="current-password">当前密码</label>
+                        <input type="password" id="current-password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-password">新密码</label>
+                        <input type="password" id="new-password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm-password">确认新密码</label>
+                        <input type="password" id="confirm-password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">修改密码</button>
+                </form>
+            </section>
+        </div>
+
+        <!-- 文章编辑弹窗 -->
+        <div class="modal" id="blog-modal">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h4 id="modal-title">编辑文章</h4>
+                <form id="blog-form">
+                    <input type="hidden" id="blog-id">
+                    <div class="form-group">
+                        <label for="blog-title">标题</label>
+                        <input type="text" id="blog-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="blog-category">分类</label>
+                        <select id="blog-category">
+                            <option value="security">网络安全</option>
+                            <option value="tools">工具实践</option>
+                            <option value="ctf">CTF 竞赛</option>
+                            <option value="linux">Linux 探索</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="blog-content">内容</label>
+                        <textarea id="blog-content" rows="8" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 后台逻辑 -->
+    <script src="js/admin.js"></script>
+</body>
+</html>

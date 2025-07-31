@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>kon-myblog - 网络安全技术博客</title>
+    <!-- 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 全局样式 -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- 登录面板（默认隐藏） -->
+    <div class="login-panel" id="login-panel">
+        <h2><i class="fas fa-lock"></i> 管理员登录</h2>
+        <form class="login-form" id="login-form">
+            <div class="form-group">
+                <label for="username">用户名</label>
+                <input type="text" id="username" placeholder="管理员用户名" required>
+            </div>
+            <div class="form-group">
+                <label for="password">密码</label>
+                <input type="password" id="password" placeholder="密码" required>
+            </div>
+            <button type="submit" class="login-btn">登录管理后台</button>
+        </form>
+    </div>
+
+    <!-- 管理员登录提示 -->
+    <div class="admin-notice" id="admin-notice" style="display: none;">
+        <i class="fas fa-user-shield"></i> 管理员已登录
+    </div>
+
+    <!-- 头部导航 -->
+    <header>
+        <div class="logo">
+            <i class="fas fa-blog"></i>
+            <h1>kon-myblog</h1>
+        </div>
+
+        <!-- 搜索功能 -->
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="搜索文章...">
+            <button id="search-btn"><i class="fas fa-search"></i></button>
+        </div>
+
+        <nav>
+            <ul>
+                <li><a href="#" class="active">首页</a></li>
+                <li><a href="#blogs">博客</a></li>
+                <li><a href="#about">关于我</a></li>
+                <li><a href="#contact">联系</a></li>
+                <!-- 后台入口（登录后显示） -->
+                <li><a href="admin.html" id="admin-link" style="display: none;">
+                    <i class="fas fa-user-shield"></i> 管理后台
+                </a></li>
+                <!-- 隐藏登录触发 -->
+                <li><a href="#" id="login-trigger" style="opacity: 0.8; font-size: 0.9em;">
+                    <i class="fas fa-key"></i> 管理登录
+                </a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- 主内容区 -->
+    <div class="container">
+        <!-- 欢迎横幅 -->
+        <section class="hero">
+            <h2>欢迎来到我的技术博客</h2>
+            <p>网络安全学习者 | 记录成长，分享知识</p>
+            <div class="hero-btns">
+                <button class="btn btn-primary" onclick="window.location.href='#blogs'">
+                    <i class="fas fa-book-reader"></i> 阅读博客
+                </button>
+                <button class="btn btn-outline" onclick="window.location.href='#about'">
+                    <i class="fas fa-user"></i> 关于作者
+                </button>
+            </div>
+        </section>
+
+        <!-- 分类筛选 -->
+        <section class="categories">
+            <h3>文章分类</h3>
+            <div class="category-tags">
+                <span class="category-tag active" data-category="all">全部</span>
+                <span class="category-tag" data-category="security">网络安全</span>
+                <span class="category-tag" data-category="tools">工具实践</span>
+                <span class="category-tag" data-category="ctf">CTF 竞赛</span>
+                <span class="category-tag" data-category="linux">Linux 探索</span>
+            </div>
+        </section>
+
+        <!-- 博客列表 -->
+        <section id="blogs">
+            <div class="section-title">
+                <h3>最新文章</h3>
+                <div class="sort-options">
+                    <span>排序:</span>
+                    <select id="sort-select">
+                        <option value="newest">最新发布</option>
+                        <option value="oldest">最早发布</option>
+                        <option value="popular">最多互动</option>
+                    </select>
+                </div>
+            </div>
+            <div class="blogs-grid" id="blogs-container">
+                <!-- 动态加载博客卡片 -->
+            </div>
+        </section>
+
+        <!-- 关于作者 -->
+        <section id="about" class="about-section">
+            <div class="about-image">
+                <img id="profile-avatar" 
+                     src="https://avatars.githubusercontent.com/u/your_github_id" 
+                     alt="作者头像">
+            </div>
+            <div class="about-content">
+                <h3>关于我</h3>
+                <p id="profile-desc">
+                    网络安全小白，热爱技术探索，记录学习路上的思考与实践。  
+                    关注 Web 安全、渗透测试、CTF 竞赛，期待与你交流！
+                </p>
+                <div class="skills" id="skills">
+                    <span class="skill-tag">网络安全基础</span>
+                    <span class="skill-tag">Kali Linux</span>
+                    <span class="skill-tag">Python 脚本</span>
+                    <span class="skill-tag">CTF 入门</span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 主题切换（右下角） -->
+    <div class="theme-switcher">
+        <button class="theme-btn theme-default" title="默认" data-theme="default"></button>
+        <button class="theme-btn theme-light" title="明亮" data-theme="light"></button>
+        <button class="theme-btn theme-dark" title="深色" data-theme="dark"></button>
+        <button class="theme-btn theme-blue" title="蓝色" data-theme="blue"></button>
+        <button class="theme-btn theme-green" title="绿色" data-theme="green"></button>
+    </div>
+
+    <!-- 页脚（仅保留 GitHub 链接） -->
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="social-links">
+                <a href="https://github.com/konwait12" target="_blank">
+                    <i class="fab fa-github"></i>
+                </a>
+            </div>
+            <p class="copyright">
+                © 2024 kon-myblog | 网络安全博客 
+            </p>
+        </div>
+    </footer>
+
+    <!-- 前台逻辑 -->
+    <script src="js/main.js"></script>
+</body>
+</html>
