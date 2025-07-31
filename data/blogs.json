@@ -49,4 +49,14 @@
         "category": "security",  
         "tags": ["网络安全", "学习路径"]  
     }
+    {
+        "id": 6,  
+        "title": "要疯了",
+        "content": "嘟嘟噜",
+        "image": "https://pic4.zhimg.com/v2-f2b893f47351a724d0d3a0df4f878d55_r.jpg",  
+        "date": "2025-07-31",  
+        "comments": 0,  
+        "category": "security",  
+        "tags": ["网络安全", "学习路径"]  
+    }
 ]
