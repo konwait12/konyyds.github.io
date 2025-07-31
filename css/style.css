@@ -30,9 +30,25 @@
 
 body {
     background-color: var(--bg-color);
+    background-image: url('https://pic1.zhimg.com/v2-cbac7dab8c8035cce5c8c6847e4fef5d_r.jpg?source=2c26e567'); /* 例如：https://picsum.photos/1920/1080 */
+    background-size: cover; /* 图片铺满屏幕 */
+    background-attachment: fixed; /* 滚动时背景固定 */
+    background-position: center; /* 图片居中 */
+    background-repeat: no-repeat; /* 不重复平铺 */
     color: var(--text-color);
     line-height: 1.6;
     font-size: 16px;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(31, 31, 56, 0.85); /* 半透明遮罩，增强文字可读性 */
+    z-index: -1;
 }
 
 /* 通用样式 */
